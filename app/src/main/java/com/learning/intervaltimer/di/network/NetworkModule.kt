@@ -13,7 +13,6 @@ val networkModule = module {
     singleOf(::HttpClientFactory)
     singleOf(::NetworkResponseHandler)
 
-    // Gateway
     single<HttpClient>(qualifier = HttpClientQualifier.WorkoutQualifier) {
         get<HttpClientFactory>().createWorkoutHttpClient(
             networkResponseHandler = get()

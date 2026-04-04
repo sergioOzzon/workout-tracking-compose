@@ -27,7 +27,8 @@ internal class HttpClientFactory(
         return HttpClient(OkHttp) {
             expectSuccess = true
 
-            if (BuildConfig.DEBUGGABLE) {
+            //TODO add debugable
+            if (true) {
                 install(Logging) {
                     logger = Logger.SIMPLE
                     level = LogLevel.ALL

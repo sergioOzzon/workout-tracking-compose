@@ -2,6 +2,7 @@ package com.learning.intervaltimer
 
 import android.app.Application
 import com.learning.intervaltimer.di.data.dataModule
+import com.learning.intervaltimer.di.mainModule
 import com.learning.intervaltimer.di.network.networkModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -20,6 +21,7 @@ class IntervalTimerApp : Application() {
             androidContext(applicationContext)
 
             modules(
+                mainModule,
                 dataModule,
                 networkModule
             )

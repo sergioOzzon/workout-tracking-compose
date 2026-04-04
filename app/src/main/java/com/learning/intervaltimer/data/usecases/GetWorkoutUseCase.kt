@@ -6,16 +6,17 @@ import com.learning.intervaltimer.network.services.WorkoutService
 
 interface GetWorkoutUseCase {
 
-    suspend operator fun invoke(): Result<WorkoutDTO>
+    suspend operator fun invoke(
+        workoutId: String,
+    ): Result<WorkoutDTO>
 
 }
 
 internal class GetWorkoutUseCaseImpl(
     private val workoutService: WorkoutService,
-    private val workoutId: String,
 ) : GetWorkoutUseCase {
 
-    override suspend operator fun invoke(): Result<WorkoutDTO> {
+    override suspend fun invoke(workoutId: String): Result<WorkoutDTO> {
         return runCatching {
             workoutService
                 .getWorkout(workoutId)

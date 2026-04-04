@@ -1,11 +1,6 @@
 package com.learning.intervaltimer.network
 
-import io.ktor.client.plugins.ClientRequestException
-import io.ktor.client.plugins.RedirectResponseException
-import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.request.HttpRequest
-import io.ktor.http.HttpStatusCode
-import kotlinx.io.IOException
 
 internal class NetworkResponseHandler {
     suspend fun handleResponseError(cause: Throwable, request: HttpRequest) {
