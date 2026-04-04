@@ -1,21 +1,14 @@
 package com.learning.intervaltimer.ui.screens
 
+import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
-import com.learning.intervaltimer.navigation.SearchWorkoutScreenRoute
+import org.koin.compose.viewmodel.koinViewModel
 
-fun NavGraphBuilder.searchWorkoutScreen(navController: NavController) {
-    composable(
-        route = SearchWorkoutScreenRoute::class
-    ) {
-        SearchWorkoutScreen(navController)
-    }
-
-}
-
-class SearchWorkoutScreen(
+@Composable
+fun SearchWorkoutScreen(
     navController: NavController,
-    viewModel: SearchWorkoutViewModel = koinViewModel()
+    viewModel: SearchWorkoutViewModel = koinViewModel(),
 ) {
+
+
 }
