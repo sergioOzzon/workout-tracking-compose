@@ -3,6 +3,8 @@ package com.learning.intervaltimer.di.network
 import com.learning.intervaltimer.network.API_BASE_URL
 import com.learning.intervaltimer.network.HttpClientFactory
 import com.learning.intervaltimer.network.NetworkResponseHandler
+import com.learning.intervaltimer.network.services.WorkoutService
+import com.learning.intervaltimer.network.services.createWorkoutService
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.ktorfit
 import io.ktor.client.HttpClient
@@ -25,8 +27,7 @@ val networkModule = module {
         }
     }
 
-
-    // single<WorkoutService> {
-    //get<Ktorfit>(qualifier = KtorfitQualifier.WorkoutQualifier).createWorkoutService()
-    //}
+    single<WorkoutService> {
+        get<Ktorfit>(qualifier = KtorfitQualifier.WorkoutQualifier).createWorkoutService()
+    }
 }
