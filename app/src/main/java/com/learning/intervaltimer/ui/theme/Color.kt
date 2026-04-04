@@ -1,4 +1,4 @@
-package com.learning.compose.ui.theme
+package com.learning.intervaltimer.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

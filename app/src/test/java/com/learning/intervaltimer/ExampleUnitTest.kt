@@ -1,4 +1,4 @@
-package com.learning.compose
+package com.learning.intervaltimer
 
 import org.junit.Test
 

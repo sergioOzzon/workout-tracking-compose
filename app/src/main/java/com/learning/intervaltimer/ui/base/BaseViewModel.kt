@@ -1,4 +1,4 @@
-package com.learning.compose.ui.base
+package com.learning.intervaltimer.ui.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

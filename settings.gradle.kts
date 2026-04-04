@@ -22,6 +22,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Workout Tracking Compose Screen"
+rootProject.name = "Interval Timer Compose"
 include(":app")
  

@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.learning.compose"
+    namespace = "com.learning.intervaltimer"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -60,6 +60,7 @@ dependencies {
     //Koin
     implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.core)
+    implementation(libs.koin.android)
 
     // Ktor
     implementation(libs.ktor.client.core)

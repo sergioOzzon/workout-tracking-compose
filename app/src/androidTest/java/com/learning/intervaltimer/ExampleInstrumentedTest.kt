@@ -1,4 +1,4 @@
-package com.learning.compose
+package com.learning.intervaltimer
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
