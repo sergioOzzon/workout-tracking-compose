@@ -1,4 +1,4 @@
-package com.learning.workouttrackingcomposescreen.ui.theme
+package com.learning.compose.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

@@ -1,4 +1,4 @@
-package com.learning.workouttrackingcomposescreen
+package com.learning.compose
 
 import org.junit.Test
 

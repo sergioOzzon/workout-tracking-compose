@@ -1,4 +1,4 @@
-package com.learning.workouttrackingcomposescreen
+package com.learning.compose
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.learning.workouttrackingcomposescreen.ui.theme.WorkoutTrackingComposeScreenTheme
+import com.learning.compose.ui.theme.WorkoutTrackingComposeScreenTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
