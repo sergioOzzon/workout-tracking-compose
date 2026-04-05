@@ -26,8 +26,11 @@ class SearchWorkoutViewModel(
     ): UiState {
         return when (wish) {
             is Wish.GetWorkout -> {
-                getWorkout(wish.workoutId)
-                currentState
+                getWorkout(currentState.inputValue)
+                currentState.copy(
+                    loading = true,
+                    error = false
+                )
             }
 
             is Wish.HandleFailure -> {
@@ -39,7 +42,16 @@ class SearchWorkoutViewModel(
 
             is Wish.HandleSuccess -> {
                 sendEffect(SideEffect.GoWorkoutScreen())
-                currentState
+                currentState.copy(
+                    loading = false
+                )
+            }
+
+            is Wish.UpdateState -> {
+                currentState.copy(
+                    error = false,
+                    inputValue = wish.inputValue
+                )
             }
         }
     }
@@ -57,15 +69,16 @@ class SearchWorkoutViewModel(
     }
 
     sealed interface Wish {
-        class GetWorkout(val workoutId: String) : Wish
+        class GetWorkout() : Wish
         class HandleSuccess(val workoutDTO: WorkoutDTO) : Wish
         class HandleFailure : Wish
+        class UpdateState(val inputValue: String) : Wish
     }
 
     data class UiState(
-        val loading: Boolean = true,
+        val loading: Boolean = false,
         val error: Boolean = false,
-        val defaultWorkoutId: String = DEFAULT_WORKOUT_ID,
+        val inputValue: String = DEFAULT_WORKOUT_ID,
     )
 
     sealed interface SideEffect {
