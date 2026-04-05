@@ -51,17 +51,20 @@ class WorkoutViewModel :
 
             is Wish.ResetTimer -> {
                 resetTimer()
+
+                val totalTimeSeconds = currentState.workout?.timer?.totalTime ?: 0
+                val intervalTimeSeconds =
+                    currentState.workout?.timer?.intervals[currentState.currentIntervalIndex]?.time
+                        ?: 0
+
                 currentState.copy(
+                    workout = currentState.workout,
                     timerState = TimerState.IDLE,
-                    totalTimeSeconds = currentState.workout?.timer?.intervals[currentState.currentIntervalIndex]?.time
-                        ?: 0,
-                    intervalTimeSeconds = 0,
-                    currentIntervalIndex = 0,
-                    intervalProgress = 0f,
-                    totalProgress = 0f,
-                    formattedTotalTime = formatTime(0),
-                    formattedIntervalTime = formatTime(0),
-                    formattedTotalTimePassed = formatTime(0),
+                    totalTimeSeconds = totalTimeSeconds,
+                    intervalTimeSeconds = intervalTimeSeconds,
+                    formattedTotalTime = formatTime(totalTimeSeconds),
+                    formattedInitiallyTotalTime = formatTime(totalTimeSeconds),
+                    formattedIntervalTime = formatTime(intervalTimeSeconds),
                     currentInterval = currentState.workout?.timer?.intervals[currentState.currentIntervalIndex]?.title
                         ?: ""
                 )
