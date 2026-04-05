@@ -13,7 +13,7 @@ fun AppNavHost(navController: NavHostController) {
         startDestination = Destination.SearchWorkout
     ) {
         composable<Destination.SearchWorkout> {
-            // SearchWorkoutScreen(navController)
+            SearchWorkoutScreen(navController)
         }
         composable<Destination.IntervalTimer> {
             //IntervalTimerScreen(navController)
