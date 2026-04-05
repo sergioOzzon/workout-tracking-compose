@@ -19,86 +19,119 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.learning.intervaltimer.ui.base.components.TimerState
+import com.learning.intervaltimer.R
+import com.learning.intervaltimer.ui.base.components.NumberBadge
 import com.learning.intervaltimer.ui.theme.Orange
 import com.learning.intervaltimer.ui.theme.Primary
 import com.learning.intervaltimer.ui.theme.PrimaryLight
 import com.learning.intervaltimer.ui.theme.Secondary
+import com.learning.intervaltimer.ui.theme.Surface
 import com.learning.intervaltimer.ui.theme.TextPrimary
 import com.learning.intervaltimer.ui.theme.TextSecondary
+import com.learning.intervaltimer.ui.theme.WorkoutTheme
+
+
+enum class IntervalState { IDLE, RUNNING, PAUSED, COMPLETED, DONE }
 
 @Composable
 fun IntervalItem(
     name: String,
+    order: Int,
     duration: String,
-    state: TimerState,
+    state: IntervalState,
     progress: Float = 0f,
     modifier: Modifier = Modifier,
 ) {
-    val isCompleted = state == TimerState.COMPLETED
-    val alpha = if (isCompleted) 0.45f else 1f
+    val isRunning = state == IntervalState.RUNNING
+    val isPaused = state == IntervalState.PAUSED
+    val isCompleted = state == IntervalState.COMPLETED
+    val isDone = state == IntervalState.DONE
+    val alpha = if (isCompleted || isDone) 0.45f else 1f
 
     Box(
         modifier = modifier
             .fillMaxWidth()
+            .shadow(
+                elevation = if (isRunning || isPaused) 2.dp
+                else 0.dp,
+                shape = RoundedCornerShape(12.dp)
+            )
             .height(IntrinsicSize.Min)
             .clip(RoundedCornerShape(12.dp))
-            .background(Color.White)
+            .background(Surface)
             .then(
-                if (state == TimerState.RUNNING || state == TimerState.PAUSED) {
+                if (isRunning || isPaused) {
                     Modifier.border(
-                        1.5.dp,
-                        if (state == TimerState.RUNNING) Primary else Orange,
-                        RoundedCornerShape(12.dp)
+                        0.5.dp, if (isRunning) Primary else Orange, RoundedCornerShape(12.dp)
                     )
                 } else Modifier
             )
     ) {
-        // Progress Fill
-        if (state == TimerState.RUNNING || state == TimerState.PAUSED) {
+        if (isRunning || isPaused) {
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
                     .fillMaxWidth(progress)
-                    .background(if (state == TimerState.RUNNING) PrimaryLight else Orange.copy(alpha = 0.1f))
+                    .background(
+                        if (isRunning) PrimaryLight else Orange.copy(
+                            alpha = 0.08f
+                        )
+                    )
             )
         }
 
         Row(
             modifier = Modifier
-                .padding(horizontal = 14.dp, vertical = 12.dp)
+                .padding(
+                    horizontal = WorkoutTheme.spacing.l, vertical = WorkoutTheme.spacing.m
+                )
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.Absolute.SpaceBetween
         ) {
-            Text(
-                text = name, style = MaterialTheme.typography.labelLarge.copy(
-                    textDecoration = if (isCompleted) TextDecoration.LineThrough else null
-                ), color = TextPrimary.copy(alpha = alpha)
-            )
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = duration,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = TextSecondary.copy(alpha = alpha)
-                )
-                if (isCompleted) {
+            Box(
+                modifier = Modifier.size(28.dp)
+            ) {
+                if (isCompleted || isDone) {
                     Icon(
-                        painterResource(android.R.drawable.checkbox_on_background),
+                        painterResource(R.drawable.is_checked),
                         contentDescription = null,
                         modifier = Modifier
+                            .padding(start = 4.dp)
                             .size(16.dp)
-                            .padding(start = 4.dp),
-                        tint = Secondary
+                            .align(Alignment.Center),
+                        tint = if (isCompleted) TextSecondary else Secondary
                     )
+                } else {
+                    NumberBadge(order, state)
                 }
             }
+            Text(
+                text = name,
+                style = MaterialTheme.typography.labelLarge.copy(
+                    textDecoration = if (isCompleted || isDone) TextDecoration.LineThrough else null
+                ),
+                color = TextPrimary.copy(alpha = alpha),
+                textAlign = TextAlign.Start,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = WorkoutTheme.spacing.m)
+            )
+            Text(
+                text = duration,
+                style = MaterialTheme.typography.titleSmall,
+                color = TextSecondary.copy(alpha = alpha)
+            )
         }
     }
 }
@@ -107,8 +140,10 @@ fun IntervalItem(
 @Preview(showBackground = true)
 fun IntervalItemPreview() {
     IntervalItem(
-        name = "Warmup",
+        name = "Медленный бег Медленный бег Медленный бег",
+        order = 5,
         duration = "00:30",
-        state = TimerState.RUNNING,
+        progress = 0.4f,
+        state = IntervalState.DONE,
     )
 }

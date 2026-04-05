@@ -20,7 +20,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -41,6 +40,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.learning.intervaltimer.R
+import com.learning.intervaltimer.ui.base.Items.IntervalState
 import com.learning.intervaltimer.ui.theme.Border
 import com.learning.intervaltimer.ui.theme.DisabledBg
 import com.learning.intervaltimer.ui.theme.DisabledText
@@ -49,6 +49,7 @@ import com.learning.intervaltimer.ui.theme.Orange
 import com.learning.intervaltimer.ui.theme.Primary
 import com.learning.intervaltimer.ui.theme.PrimaryLight
 import com.learning.intervaltimer.ui.theme.Secondary
+import com.learning.intervaltimer.ui.theme.Surface
 import com.learning.intervaltimer.ui.theme.TextPrimary
 import com.learning.intervaltimer.ui.theme.TextSecondary
 import com.learning.intervaltimer.ui.theme.TextTertiary
@@ -71,7 +72,7 @@ fun PrimaryButton(
         enabled = enabled && !isLoading,
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(
-            width = 1.dp, brush = SolidColor(if (enabled) color else Primary)
+            width = 0.5.dp, brush = SolidColor(if (enabled) color else Primary)
         ),
         colors = ButtonDefaults.buttonColors(
             containerColor = if (isLoading) PrimaryLight else color,
@@ -113,7 +114,7 @@ fun GhostButton(
         enabled = enabled,
         shape = RoundedCornerShape(12.dp),
         border = ButtonDefaults.outlinedButtonBorder(enabled).copy(
-            width = 1.dp, brush = SolidColor(if (enabled) borderColor else DisabledBg)
+            width = 0.5.dp, brush = SolidColor(if (enabled) borderColor else DisabledBg)
         ),
         colors = ButtonDefaults.outlinedButtonColors(
             contentColor = if (borderColor == Error) Error else TextPrimary,
@@ -172,14 +173,12 @@ fun SearchWorkoutInputField(
                 .fillMaxWidth(),
             keyboardActions = keyboardAction,
             keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Search,
-                keyboardType = KeyboardType.Number
+                imeAction = ImeAction.Search, keyboardType = KeyboardType.Number
             )
         )
         if (isError) {
             Row(
-                modifier = Modifier
-                    .padding(top = WorkoutTheme.spacing.s)
+                modifier = Modifier.padding(top = WorkoutTheme.spacing.s)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_alert),
@@ -223,50 +222,47 @@ fun TimerCard(
 
     Box(
         modifier = modifier
-            .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(backgroundBrush)
-            .border(1.5.dp, borderColor, RoundedCornerShape(16.dp))
-            .padding(24.dp)
+            .border(0.5.dp, borderColor, RoundedCornerShape(16.dp))
+            .fillMaxWidth()
     ) {
         Column { content() }
     }
 }
 
 @Composable
-fun AppBackButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    IconButton(
-        onClick = onClick, modifier = modifier
-            .size(40.dp)
-            .border(1.dp, Border, CircleShape)
-    ) {
-        Icon(
-            painterResource(android.R.drawable.arrow_up_float),
-            contentDescription = "Back",
-            modifier = Modifier.size(20.dp),
-            tint = TextPrimary
-        )
-    }
-}
-
-@Composable
 fun NumberBadge(
     number: Int,
-    modifier: Modifier = Modifier,
+    state: IntervalState,
 ) {
     Box(
-        modifier = modifier
+        modifier = Modifier
             .size(28.dp)
-            .background(DisabledBg, CircleShape),
+            .background(
+                when (state) {
+                    IntervalState.IDLE -> DisabledText
+                    IntervalState.RUNNING -> Primary
+                    IntervalState.PAUSED -> Orange
+                    else -> Color.Transparent
+                }, CircleShape
+            ),
+
         contentAlignment = Alignment.Center
     ) {
-        Text(
+        if (state == IntervalState.COMPLETED) Icon(
+            painterResource(android.R.drawable.checkbox_on_background),
+            contentDescription = null,
+        )
+        else Text(
             text = number.toString(),
-            style = MaterialTheme.typography.labelSmall,
-            color = TextSecondary
+            style = MaterialTheme.typography.labelMedium,
+            color = when (state) {
+                IntervalState.IDLE -> TextSecondary
+                IntervalState.RUNNING -> Surface
+                IntervalState.PAUSED -> Surface
+                else -> Color.Transparent
+            }
         )
     }
 }

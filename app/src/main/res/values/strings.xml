@@ -13,7 +13,7 @@
     <!-- Workout Screen -->
     <string name="workout_timer_completed">Завершена</string>
     <string name="workout_state_idle">Готово к старту</string>
-    <string name="workout_state_running">Выполняетя</string>
+    <string name="workout_state_running">Выполняетcя</string>
     <string name="workout_state_pause">На паузе</string>
     <string name="workout_state_completed">Тренировка завершена</string>
     <string name="workout_timer_progress">Прошло %1$s из %2$s</string>

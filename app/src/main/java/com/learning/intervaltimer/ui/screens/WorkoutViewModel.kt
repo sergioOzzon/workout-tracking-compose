@@ -1,7 +1,5 @@
 package com.learning.intervaltimer.ui.screens
 
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewModelScope
 import com.learning.intervaltimer.domain.WorkoutDTO
 import com.learning.intervaltimer.ui.base.BaseViewModel
@@ -10,7 +8,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
 
 class WorkoutViewModel :
     BaseViewModel<WorkoutViewModel.Wish, WorkoutViewModel.UiState, WorkoutViewModel.SideEffect>() {
@@ -25,11 +22,20 @@ class WorkoutViewModel :
     ): UiState {
         return when (wish) {
             is Wish.LoadWorkout -> {
+                val totalTimeSeconds = wish.workout.timer?.totalTime ?: 0
+                val intervalTimeSeconds =
+                    wish.workout.timer?.intervals[currentState.currentIntervalIndex]?.time ?: 0
+
                 currentState.copy(
                     workout = wish.workout,
                     timerState = TimerState.IDLE,
-                    currentTimeSeconds = wish.workout.timer?.totalTime ?: 0,
-                    formattedTime = formatTime(wish.workout.timer?.totalTime ?: 0)
+                    totalTimeSeconds = totalTimeSeconds,
+                    intervalTimeSeconds = intervalTimeSeconds,
+                    formattedTotalTime = formatTime(totalTimeSeconds),
+                    formattedInitiallyTotalTime = formatTime(totalTimeSeconds),
+                    formattedIntervalTime = formatTime(intervalTimeSeconds),
+                    currentInterval = wish.workout.timer?.intervals[currentState.currentIntervalIndex]?.title
+                        ?: ""
                 )
             }
 
@@ -47,18 +53,54 @@ class WorkoutViewModel :
                 resetTimer()
                 currentState.copy(
                     timerState = TimerState.IDLE,
-                    currentTimeSeconds = 0,
-                    formattedTime = formatTime(0)
+                    totalTimeSeconds = 0,
+                    intervalTimeSeconds = 0,
+                    currentIntervalIndex = 0,
+                    intervalProgress = 0f,
+                    totalProgress = 0f,
+                    formattedTotalTime = formatTime(0),
+                    formattedIntervalTime = formatTime(0)
                 )
             }
 
             is Wish.Tick -> {
-                val newSeconds = currentState.currentTimeSeconds - 1
-                currentState.copy(
-                    currentTimeSeconds = newSeconds,
-                    formattedTime = formatTime(newSeconds),
-                    timerState = TimerState.RUNNING
-                )
+
+                val newTotalTimeSeconds = currentState.totalTimeSeconds - 1
+
+                var newIntervalTimeSeconds = currentState.intervalTimeSeconds - 1
+
+                val totalProgress =
+                    1f - newTotalTimeSeconds.toFloat() / currentState.workout?.timer?.totalTime!!
+                val intervalProgress =
+                    1f - newIntervalTimeSeconds.toFloat() / (currentState.workout.timer.intervals[currentState.currentIntervalIndex].time.toFloat()).let { 1f }
+
+                var newCurrentIntervalIndex: Int
+                if (newIntervalTimeSeconds == 0) {
+                    newCurrentIntervalIndex = currentState.currentIntervalIndex + 1
+                    newIntervalTimeSeconds =
+                        currentState.workout.timer.intervals[currentState.currentIntervalIndex].time
+                } else {
+                    newCurrentIntervalIndex = currentState.currentIntervalIndex
+                }
+
+
+                if (currentState.totalTimeSeconds == 0) {
+                    currentState.copy(
+                        timerState = TimerState.COMPLETED
+                    )
+                } else {
+                    currentState.copy(
+                        totalTimeSeconds = newTotalTimeSeconds,
+                        intervalTimeSeconds = newIntervalTimeSeconds,
+                        formattedTotalTime = formatTime(newTotalTimeSeconds),
+                        formattedIntervalTime = formatTime(newIntervalTimeSeconds),
+                        timerState = TimerState.RUNNING,
+                        totalProgress = totalProgress,
+                        intervalProgress = intervalProgress,
+                        currentIntervalIndex = newCurrentIntervalIndex,
+                        currentInterval = currentState.workout.timer.intervals[newCurrentIntervalIndex].title
+                    )
+                }
             }
         }
     }
@@ -98,9 +140,15 @@ class WorkoutViewModel :
     data class UiState(
         val workout: WorkoutDTO? = null,
         val timerState: TimerState = TimerState.IDLE,
-        val currentTimeSeconds: Int = 0,
-        val formattedTime: String = "00:00",
+        val totalTimeSeconds: Int = 0,
+        val intervalTimeSeconds: Int = 0,
+        val formattedTotalTime: String = "00:00",
+        val formattedInitiallyTotalTime: String = "00:00",
+        val formattedIntervalTime: String = "00:00",
         val currentIntervalIndex: Int = 0,
+        val currentInterval: String = "",
+        val totalProgress: Float = 0f,
+        val intervalProgress: Float = 0f,
     )
 
     sealed interface SideEffect {

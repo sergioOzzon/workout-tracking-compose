@@ -62,7 +62,7 @@ val Typography = Typography(
     // Button: Roboto 15/1.0 SemiBold
     labelMedium = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Bold,
         fontSize = 15.sp,
         lineHeight = 15.sp
     ),
