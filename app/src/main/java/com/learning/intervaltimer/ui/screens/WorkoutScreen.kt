@@ -141,7 +141,7 @@ fun WorkoutScreenContent(
                         Text(
                             text = stringResource(
                                 R.string.workout_timer_progress,
-                                uiState.formattedTotalTime,
+                                uiState.formattedTotalTimePassed,
                                 uiState.formattedInitiallyTotalTime
                             ), style = MaterialTheme.typography.bodyLarge, color = TextSecondary
                         )
@@ -179,7 +179,6 @@ fun WorkoutScreenContent(
                             uiState.workout?.timer?.intervals?.size ?: 1
                         ), style = MaterialTheme.typography.bodyMedium, color = TextSecondary
                     )
-
                 }
 
                 LazyColumn(

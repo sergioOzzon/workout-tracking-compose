@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -287,6 +288,8 @@ fun WorkoutProgressBar(
             .height(4.dp)
             .clip(RoundedCornerShape(2.dp)),
         color = color,
-        trackColor = Border
+        trackColor = Border,
+        strokeCap = StrokeCap.Round,
+        gapSize = 0.dp
     )
 }

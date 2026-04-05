@@ -53,13 +53,17 @@ class WorkoutViewModel :
                 resetTimer()
                 currentState.copy(
                     timerState = TimerState.IDLE,
-                    totalTimeSeconds = 0,
+                    totalTimeSeconds = currentState.workout?.timer?.intervals[currentState.currentIntervalIndex]?.time
+                        ?: 0,
                     intervalTimeSeconds = 0,
                     currentIntervalIndex = 0,
                     intervalProgress = 0f,
                     totalProgress = 0f,
                     formattedTotalTime = formatTime(0),
-                    formattedIntervalTime = formatTime(0)
+                    formattedIntervalTime = formatTime(0),
+                    formattedTotalTimePassed = formatTime(0),
+                    currentInterval = currentState.workout?.timer?.intervals[currentState.currentIntervalIndex]?.title
+                        ?: ""
                 )
             }
 
@@ -71,8 +75,10 @@ class WorkoutViewModel :
 
                 val totalProgress =
                     1f - newTotalTimeSeconds.toFloat() / currentState.workout?.timer?.totalTime!!
-                val intervalProgress =
-                    1f - newIntervalTimeSeconds.toFloat() / (currentState.workout.timer.intervals[currentState.currentIntervalIndex].time.toFloat()).let { 1f }
+
+                val totalIntervalTime =
+                    currentState.workout.timer.intervals[currentState.currentIntervalIndex].time.toFloat()
+                val intervalProgress = 1f - newIntervalTimeSeconds.toFloat() / totalIntervalTime
 
                 var newCurrentIntervalIndex: Int
                 if (newIntervalTimeSeconds == 0) {
@@ -94,6 +100,7 @@ class WorkoutViewModel :
                         intervalTimeSeconds = newIntervalTimeSeconds,
                         formattedTotalTime = formatTime(newTotalTimeSeconds),
                         formattedIntervalTime = formatTime(newIntervalTimeSeconds),
+                        formattedTotalTimePassed = formatTime(currentState.workout.timer.totalTime - currentState.totalTimeSeconds),
                         timerState = TimerState.RUNNING,
                         totalProgress = totalProgress,
                         intervalProgress = intervalProgress,
@@ -145,6 +152,7 @@ class WorkoutViewModel :
         val formattedTotalTime: String = "00:00",
         val formattedInitiallyTotalTime: String = "00:00",
         val formattedIntervalTime: String = "00:00",
+        val formattedTotalTimePassed: String = "00:00",
         val currentIntervalIndex: Int = 0,
         val currentInterval: String = "",
         val totalProgress: Float = 0f,
