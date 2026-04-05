@@ -8,10 +8,18 @@ import com.learning.intervaltimer.network.services.createWorkoutService
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.ktorfit
 import io.ktor.client.HttpClient
+import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val networkModule = module {
+    single {
+        Json {
+            ignoreUnknownKeys = true
+            prettyPrint = true
+            isLenient = true
+        }
+    }
     singleOf(::HttpClientFactory)
     singleOf(::NetworkResponseHandler)
 
