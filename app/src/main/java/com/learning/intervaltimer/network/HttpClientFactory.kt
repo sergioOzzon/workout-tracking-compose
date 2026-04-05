@@ -1,5 +1,6 @@
 package com.learning.intervaltimer.network
 
+import com.learning.intervaltimer.BuildConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpCallValidator
@@ -17,7 +18,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 
-internal class HttpClientFactory(
+class HttpClientFactory(
     private val json: Json,
 ) {
 
@@ -27,8 +28,7 @@ internal class HttpClientFactory(
         return HttpClient(OkHttp) {
             expectSuccess = true
 
-            //TODO add debugable
-            if (true) {
+            if (BuildConfig.DEBUG) {
                 install(Logging) {
                     logger = Logger.SIMPLE
                     level = LogLevel.ALL
