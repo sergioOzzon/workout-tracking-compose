@@ -23,7 +23,7 @@ class HttpClientFactory(
 ) {
 
     fun createWorkoutHttpClient(
-        networkResponseHandler: NetworkResponseHandler,
+        networkResponseHandler: NetworkResponseHandler
     ): HttpClient {
         return HttpClient(OkHttp) {
             expectSuccess = true

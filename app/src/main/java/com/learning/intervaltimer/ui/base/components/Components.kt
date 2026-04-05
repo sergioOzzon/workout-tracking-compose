@@ -1,4 +1,4 @@
-package com.learning.intervaltimer.ui.base
+package com.learning.intervaltimer.ui.base.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.learning.intervaltimer.R
@@ -102,7 +103,7 @@ fun GhostButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    borderColor: Color = Border,
+    borderColor: Color = Error,
 ) {
     OutlinedButton(
         onClick = onClick,
@@ -112,7 +113,7 @@ fun GhostButton(
         enabled = enabled,
         shape = RoundedCornerShape(12.dp),
         border = ButtonDefaults.outlinedButtonBorder(enabled).copy(
-            width = 1.5.dp, brush = SolidColor(if (enabled) borderColor else DisabledBg)
+            width = 1.dp, brush = SolidColor(if (enabled) borderColor else DisabledBg)
         ),
         colors = ButtonDefaults.outlinedButtonColors(
             contentColor = if (borderColor == Error) Error else TextPrimary,
@@ -126,7 +127,7 @@ fun GhostButton(
 }
 
 @Composable
-fun WorkoutInputField(
+fun SearchWorkoutInputField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -171,7 +172,7 @@ fun WorkoutInputField(
                 .fillMaxWidth(),
             keyboardActions = keyboardAction,
             keyboardOptions = KeyboardOptions(
-                imeAction = androidx.compose.ui.text.input.ImeAction.Search,
+                imeAction = ImeAction.Search,
                 keyboardType = KeyboardType.Number
             )
         )
@@ -181,10 +182,12 @@ fun WorkoutInputField(
                     .padding(top = WorkoutTheme.spacing.s)
             ) {
                 Icon(
-                    painter = painterResource(android.R.drawable.ic_dialog_info),
+                    painter = painterResource(R.drawable.ic_alert),
                     tint = Error,
                     contentDescription = "",
-                    modifier = Modifier.size(12.dp),
+                    modifier = Modifier
+                        .size(12.dp)
+                        .align(Alignment.CenterVertically),
                 )
                 Text(
                     text = stringResource(R.string.search_error_not_found),
@@ -196,8 +199,6 @@ fun WorkoutInputField(
         }
     }
 }
-
-enum class TimerState { IDLE, RUNNING, PAUSED, COMPLETED }
 
 @Composable
 fun TimerCard(

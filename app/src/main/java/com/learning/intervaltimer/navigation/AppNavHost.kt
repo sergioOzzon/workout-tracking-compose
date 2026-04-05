@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.learning.intervaltimer.ui.screens.SearchWorkoutScreen
+import com.learning.intervaltimer.ui.screens.WorkoutScreen
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
@@ -15,8 +16,8 @@ fun AppNavHost(navController: NavHostController) {
         composable<Destination.SearchWorkout> {
             SearchWorkoutScreen(navController)
         }
-        composable<Destination.IntervalTimer> {
-            //IntervalTimerScreen(navController)
+        composable<Destination.Workout> {
+            WorkoutScreen(navController)
         }
     }
 }

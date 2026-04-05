@@ -9,5 +9,5 @@ sealed class Destination {
     data object SearchWorkout : Destination()
     
     @Serializable
-    data object IntervalTimer : Destination()
+    data object Workout : Destination()
 }

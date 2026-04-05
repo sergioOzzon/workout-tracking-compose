@@ -2,7 +2,7 @@ package com.learning.intervaltimer.network
 
 import io.ktor.client.request.HttpRequest
 
-internal class NetworkResponseHandler {
+class NetworkResponseHandler {
     suspend fun handleResponseError(cause: Throwable, request: HttpRequest) {
         throw when (cause) {
             else -> {

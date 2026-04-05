@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,13 +32,16 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.learning.intervaltimer.R
-import com.learning.intervaltimer.ui.base.PrimaryButton
-import com.learning.intervaltimer.ui.base.WorkoutInputField
+import com.learning.intervaltimer.navigation.Destination
+import com.learning.intervaltimer.ui.base.components.PrimaryButton
+import com.learning.intervaltimer.ui.base.components.SearchWorkoutInputField
 import com.learning.intervaltimer.ui.theme.Bg
 import com.learning.intervaltimer.ui.theme.Primary
 import com.learning.intervaltimer.ui.theme.PrimaryLight
 import com.learning.intervaltimer.ui.theme.TextSecondary
 import com.learning.intervaltimer.ui.theme.WorkoutTheme.spacing
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -47,7 +51,27 @@ fun SearchWorkoutScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    SearchWorkoutScreenContent(uiState, viewModel::sendWish)
 
+    LaunchedEffect(Unit) {
+        viewModel
+            .sideEffectFlow
+            .onEach { effect ->
+                when (effect) {
+                    is SearchWorkoutViewModel.SideEffect.GoWorkoutScreen -> navController.navigate((Destination.Workout))
+                }
+            }
+            .launchIn(this)
+    }
+
+}
+
+
+@Composable
+private fun SearchWorkoutScreenContent(
+    uiState: SearchWorkoutViewModel.UiState,
+    onAction: (SearchWorkoutViewModel.Wish) -> Unit,
+) {
     Scaffold(
         content = { padding: PaddingValues ->
             Column(
@@ -103,7 +127,7 @@ fun SearchWorkoutScreen(
                     modifier = Modifier.padding(top = spacing.l)
                 )
 
-                WorkoutInputField(
+                SearchWorkoutInputField(
                     modifier = Modifier.padding(top = spacing.xl),
                     value = uiState.inputValue,
                     label = stringResource(R.string.search_id_label),
@@ -111,42 +135,44 @@ fun SearchWorkoutScreen(
                     isError = uiState.error,
                     isEnabled = !uiState.loading,
                     onValueChange = { value ->
-                        viewModel.sendWish(SearchWorkoutViewModel.Wish.UpdateState(value))
+                        onAction(SearchWorkoutViewModel.Wish.UpdateState(value))
                     },
                     keyboardAction = KeyboardActions {
-                        viewModel.sendWish(SearchWorkoutViewModel.Wish.GetWorkout())
+                        onAction(SearchWorkoutViewModel.Wish.GetWorkout())
                     }
                 )
 
                 PrimaryButton(
                     text = getButtonTextBy(uiState),
                     onClick = {
-                        viewModel.sendWish(SearchWorkoutViewModel.Wish.GetWorkout())
+                        onAction(SearchWorkoutViewModel.Wish.GetWorkout())
                     },
                     modifier = Modifier.padding(top = spacing.l),
                     enabled = !uiState.loading,
                     isLoading = uiState.loading
                 )
             }
-
         }
     )
 }
 
 @Composable
 private fun getButtonTextBy(uiState: SearchWorkoutViewModel.UiState): String {
-    return if (uiState.error) {
+    return if (uiState.error)
         stringResource(R.string.search_button_retry)
-    } else if (uiState.loading) {
+    else if (uiState.loading)
         stringResource(R.string.search_button_loading)
-    } else {
+    else
         stringResource(R.string.search_button_load)
-    }
 }
-
 
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun SearchWorkoutLayoutPreview() {
-
+    SearchWorkoutScreenContent(
+        SearchWorkoutViewModel.UiState(
+            loading = false,
+            error = true
+        )
+    ) { }
 }
